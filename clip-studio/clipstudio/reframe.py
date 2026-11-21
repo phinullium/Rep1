@@ -194,7 +194,7 @@ def debug_sheet(track: Track, out: Path) -> None:
         return
     import supervision as sv  # MIT, https://github.com/roboflow/supervision
 
-    annot = sv.BoxAnnotator(thickness=3)
+    annot = sv.BoxAnnotator(thickness=3, color_lookup=sv.ColorLookup.INDEX)  # boxes carry no class_id
     tiles = []
     for t, img, faces, _ids in track.debug_frames:
         if faces:

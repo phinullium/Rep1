@@ -17,13 +17,14 @@ import {FORMATS, loadCampaign, sha256File, variantMatrix} from './lib/campaign.m
 
 // Two-pass EBU R128 loudness normalisation (audio only; video stream is copied untouched).
 // Platforms normalise playback around -14 LUFS; a quieter master sounds weak in the feed.
-function normalizeLoudness(file, I = -14, TP = -1.5, LRA = 11) {
+function normalizeLoudness(file, durationSec, I = -14, TP = -1.5, LRA = 11) {
   const err = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-af', `loudnorm=I=${I}:TP=${TP}:LRA=${LRA}:print_format=json`, '-f', 'null', '-'], {encoding: 'utf8'}).stderr;
   const m = JSON.parse(err.slice(err.lastIndexOf('{'), err.lastIndexOf('}') + 1));
   const tmp = file.replace(/\.mp4$/, '.norm.mp4');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', file, '-map', '0', '-c:v', 'copy',
     '-af', `loudnorm=I=${I}:TP=${TP}:LRA=${LRA}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true`,
-    '-ar', '48000', '-c:a', 'aac', '-b:a', '320k', '-movflags', '+faststart', tmp]);
+    // -t: the AAC re-encode otherwise overshoots the video by ~0.1 s (QC flagged 25.1 s audio on 25.0 s video).
+    '-ar', '48000', '-c:a', 'aac', '-b:a', '320k', '-t', durationSec.toFixed(3), '-movflags', '+faststart', tmp]);
   fs.renameSync(tmp, file);
   return {inputLUFS: Number(m.input_i), inputTruePeak: Number(m.input_tp), targetLUFS: I, targetTruePeak: TP};
 }
@@ -133,7 +134,7 @@ for (const [i, v] of matrix.entries()) {
     onProgress: ({progress}) => process.stdout.write(`\r  [${i + 1}/${matrix.length}] ${name} ${(progress * 100).toFixed(0)}%   `),
   });
   process.stdout.write('\n');
-  const loudness = normalizeLoudness(outputLocation);
+  const loudness = normalizeLoudness(outputLocation, composition.durationInFrames / composition.fps);
   const probe = JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', outputLocation]).toString());
   const vs = probe.streams.find((s) => s.codec_type === 'video');
   outputs.push({

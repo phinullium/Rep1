@@ -32,14 +32,15 @@ const Background: React.FC<{color: string; line: string}> = ({color, line}) => {
 
 /**
  * Slow camera push-in across a scene so no frame is ever static (retention). Origin = safe-area centre.
- * Amount is sized so text at the safe edge drifts <= ~12 px (2.5% portrait/square, 1.5% landscape).
+ * Amount is sized so text at the safe edge drifts <= ~10 px (~2.4% portrait, ~2.2% square, ~1.2% landscape),
+ * leaving room for exit slides inside the QC safe-zone tolerance.
  */
 const ScenePush: React.FC<{lead: number; len: number; children: React.ReactNode}> = ({lead, len, children}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const l = useLayout();
   const p = Math.max(0, Math.min(1, (frame / fps - lead) / len));
-  const amount = Math.min(0.025, 12 / (l.box.w / 2));
+  const amount = Math.min(0.025, 10 / (l.box.w / 2));
   return (
     <AbsoluteFill style={{scale: String(1 + amount * p), transformOrigin: `${l.safe.left + l.box.w / 2}px ${l.safe.top + l.box.h / 2}px`}}>
       {children}
