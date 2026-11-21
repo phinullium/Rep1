@@ -1,0 +1,8 @@
+{
+  "name": "clipstudio-web",
+  "private": true,
+  "description": "06 Mediabunny: trim / crop / convert in the browser, no install",
+  "dependencies": {
+    "mediabunny": "^1.66.2"
+  }
+}

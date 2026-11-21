@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>seek(t) demo</title>
+<style>
+  html, body { margin: 0; background: #111; }
+  canvas { display: block; width: 100%; height: auto; max-width: 540px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<canvas id="stage" width="1080" height="1920"></canvas>
+<script>
+// Deterministic Canvas animation: every pixel is a pure function of t.
+// window.seek(t) can be called in any order (seek(20) before seek(3)) and
+// always draws the same frame. No timers, no Math.random, no CSS transitions.
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const W = 1080, H = 1920;
+const DURATION = 8;
+
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+
+// Closed-form damped spring step (response = period in seconds, damping ratio).
+function spring(t, response = 0.5, damping = 0.82) {
+  if (t <= 0) return 0;
+  const w = (2 * Math.PI) / response;
+  const wd = w * Math.sqrt(1 - damping * damping);
+  return 1 - Math.exp(-damping * w * t) * (Math.cos(wd * t) + ((damping * w) / wd) * Math.sin(wd * t));
+}
+// value(t) = initial + Σ(targetChange × springResponse(t − changeTime))
+function springTo(t, initial, targets, response, damping) {
+  let v = initial, prev = initial;
+  for (const k of targets) { v += (k.to - prev) * spring(t - k.at, response, damping); prev = k.to; }
+  return v;
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+window.DURATION = DURATION;
+window.seek = function (t) {
+  ctx.fillStyle = '#F7F8FA';
+  ctx.fillRect(0, 0, W, H);
+
+  // Title: slides up with a spring at t=0.2.
+  const ti = spring(t - 0.2, 0.55, 0.85);
+  ctx.globalAlpha = clamp(ti * 1.4);
+  ctx.fillStyle = '#111827';
+  ctx.font = '800 110px Inter, Helvetica, Arial, sans-serif';
+  ctx.fillText('BUILD FASTER', 96, 420 + (1 - ti) * 60);
+  ctx.globalAlpha = 1;
+
+  // The article's example: progress bar fills from t=3 to t=5.
+  const progress = ease((t - 3) / 2);
+  ctx.fillStyle = '#E5E7EB';
+  roundRect(96, 560, 888, 26, 13); ctx.fill();
+  ctx.fillStyle = '#2563EB';
+  if (progress > 0) { roundRect(96, 560, Math.max(26, 888 * progress), 26, 13); ctx.fill(); }
+  ctx.fillStyle = '#5B6474';
+  ctx.font = '600 44px Inter, Helvetica, Arial, sans-serif';
+  ctx.fillText(`${Math.round(progress * 100)}%`, 96, 660);
+
+  // Tab indicator: leading edge moves first, trailing edge follows (stretch + settle).
+  const tabs = [96, 384, 672];
+  const moves = [{at: 1.0, i: 1}, {at: 5.6, i: 2}, {at: 6.6, i: 0}];
+  const lefts = [], rights = [];
+  let prevI = 0;
+  for (const m of moves) {
+    const right = m.i > prevI;
+    lefts.push({to: tabs[m.i], at: m.at + (right ? 0.06 : 0)});
+    rights.push({to: tabs[m.i] + 288, at: m.at + (right ? 0 : 0.06)});
+    prevI = m.i;
+  }
+  const L = springTo(t, tabs[0], lefts, 0.42, 0.9);
+  const R = springTo(t, tabs[0] + 288, rights, 0.42, 0.9);
+  ['Overview', 'Revenue', 'Reports'].forEach((label, i) => {
+    ctx.fillStyle = '#111827';
+    ctx.font = '600 46px Inter, Helvetica, Arial, sans-serif';
+    ctx.fillText(label, tabs[i] + 24, 860);
+  });
+  ctx.fillStyle = '#2563EB';
+  roundRect(L, 890, R - L, 10, 5); ctx.fill();
+
+  // Bars: each bar is its own spring with a staggered start.
+  const vals = [0.35, 0.6, 0.48, 0.8, 0.66, 0.95];
+  vals.forEach((v, i) => {
+    const h = 560 * v * spring(t - (1.6 + i * 0.12), 0.5, 0.7);
+    ctx.fillStyle = i === vals.length - 1 ? '#2563EB' : '#BFD3FB';
+    if (h >= 1) { roundRect(96 + i * 150, 1600 - h, 110, h, Math.min(16, h / 2)); ctx.fill(); }
+  });
+
+  // Time stamp so any frame can be identified.
+  ctx.fillStyle = '#9CA3AF';
+  ctx.font = '500 34px ui-monospace, Menlo, monospace';
+  ctx.fillText(`seek(${t.toFixed(3)})`, 96, 1780);
+};
+
+window.seek(0);
+</script>
+</body>
+</html>

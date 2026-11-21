@@ -1,0 +1,97 @@
+{
+  "project": "nova-launch",
+  "client": "Nova (fictional demo product)",
+  "duration": 25,
+  "fps": 30,
+  "brand": {
+    "name": "Nova",
+    "primary": "#2563EB",
+    "background": "#F7F8FA",
+    "surface": "#FFFFFF",
+    "ink": "#0B1220",
+    "muted": "#5B6474",
+    "line": "#E3E7EE",
+    "font": "Inter",
+    "url": "nova.example"
+  },
+  "assets": {
+    "logo": "assets/logo.svg",
+    "fonts": {
+      "400": "assets/fonts/inter-400.woff2",
+      "500": "assets/fonts/inter-500.woff2",
+      "600": "assets/fonts/inter-600.woff2",
+      "700": "assets/fonts/inter-700.woff2",
+      "800": "assets/fonts/inter-800.woff2"
+    },
+    "music": "audio/music.mp3",
+    "sfx": {
+      "click": "audio/click.wav",
+      "pop": "audio/pop.wav",
+      "whoosh": "audio/whoosh.wav"
+    },
+    "beats": "audio/beats.json"
+  },
+  "product": {
+    "tagline": "Every metric. One live view.",
+    "ui": {
+      "dataSource": "demo-data",
+      "nav": ["Overview", "Revenue", "Users", "Reports"],
+      "kpis": [
+        { "label": "Active users", "value": "12,480" },
+        { "label": "Revenue", "value": "$84.2k" },
+        { "label": "Churn", "value": "1.9%" }
+      ],
+      "series": {
+        "Overview": [42, 55, 48, 63, 58, 71, 66, 79, 74, 86],
+        "Revenue": [30, 38, 35, 47, 52, 49, 61, 68, 72, 81]
+      },
+      "newItem": {
+        "button": "New report",
+        "title": "Weekly revenue report",
+        "detail": "Scheduled every Monday"
+      }
+    }
+  },
+  "hooks": [
+    { "id": "A", "angle": "problem", "text": "Still building reports *by hand?*" },
+    { "id": "B", "angle": "result", "text": "Every metric. *One live view.*" },
+    { "id": "C", "angle": "surprising-feature", "text": "Ask your data. *Get a chart.*" }
+  ],
+  "features": [
+    {
+      "title": "Live dashboards",
+      "body": "Connect your sources once. Every chart stays current.",
+      "visual": "bars"
+    },
+    {
+      "title": "Ask in plain English",
+      "body": "Type a question. Get a chart you can share.",
+      "visual": "query",
+      "query": "Revenue by region last quarter"
+    },
+    {
+      "title": "Alerts that matter",
+      "body": "Set up in under 5 minutes. Hear about changes first.",
+      "visual": "line",
+      "alert": "Signups above target"
+    }
+  ],
+  "ctas": [
+    { "id": "A", "label": "Try Now", "sub": "nova.example" },
+    { "id": "B", "label": "Book a Demo", "sub": "nova.example/demo" }
+  ],
+  "approvedClaims": [
+    "Set up in under 5 minutes"
+  ],
+  "scenes": [
+    { "id": "hook", "start": 0, "end": 3, "type": "kinetic-title" },
+    { "id": "product", "start": 3, "end": 9, "type": "interface-reveal" },
+    { "id": "features", "start": 9, "end": 18, "type": "feature-sequence" },
+    { "id": "cta", "start": 18, "end": 25, "type": "cta" }
+  ],
+  "variants": {
+    "hooks": 3,
+    "formats": ["9:16", "1:1", "16:9"],
+    "ctas": 2
+  }
+}

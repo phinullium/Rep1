@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Nova: fictional demo brand mark (original artwork, free to reuse) -->
+  <rect x="0" y="0" width="120" height="120" rx="30" fill="#2563EB"/>
+  <path d="M60 22 C64 46 74 56 98 60 C74 64 64 74 60 98 C56 74 46 64 22 60 C46 56 56 46 60 22 Z" fill="#FFFFFF"/>
+</svg>

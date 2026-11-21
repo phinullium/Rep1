@@ -1,0 +1,30 @@
+[project]
+name = "clipstudio"
+version = "1.0.0"
+description = "VOD -> find the reaction -> cut -> punch in -> caption -> ship. Wires yt-dlp, Whisper/whisper.cpp/stable-ts, pyannote, OpenCV, Norfair, Supervision, DeepFilterNet, Demucs, pysubs2, libass and PyAV into one pipeline."
+requires-python = ">=3.10"
+dependencies = [
+  "yt-dlp",
+  "av>=13",
+  "opencv-python-headless>=4.10,<5",
+  "numpy",
+  "pysubs2>=1.7",
+  "norfair>=2.2",
+  "supervision>=0.25",
+]
+
+[project.optional-dependencies]
+asr = ["stable-ts"]
+whisper = ["openai-whisper"]
+diarize = ["pyannote.audio"]
+audio = ["deepfilternet", "demucs"]
+
+[project.scripts]
+clipstudio = "clipstudio.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["clipstudio"]

@@ -1,0 +1,24 @@
+{
+  "_comment": "Validator test fixture: must be REJECTED (unapproved stat, CTA too long, low-contrast primary, missing asset, timeline gap).",
+  "project": "bad-claims",
+  "duration": 25,
+  "fps": 30,
+  "brand": {"name": "Nova", "primary": "#8FB3FF", "background": "#F7F8FA", "surface": "#FFFFFF", "ink": "#0B1220", "muted": "#5B6474", "line": "#E3E7EE", "font": "Inter", "url": "nova.example"},
+  "assets": {"logo": "assets/missing-logo.svg", "fonts": {"400": "assets/fonts/inter-400.woff2"}, "sfx": {}},
+  "product": {"tagline": "Every metric. One live view.", "ui": {"dataSource": "demo-data", "nav": ["Overview", "Revenue"], "kpis": [{"label": "a", "value": "1"}, {"label": "b", "value": "2"}, {"label": "c", "value": "3"}], "series": {"Overview": [1, 2, 3, 4], "Revenue": [2, 3, 4, 5]}, "newItem": {"button": "New", "title": "T", "detail": "D"}}},
+  "hooks": [{"id": "A", "angle": "result", "text": "Boost conversion by 240%"}],
+  "features": [
+    {"title": "One", "body": "Body.", "visual": "bars"},
+    {"title": "Two", "body": "Body.", "visual": "query"},
+    {"title": "Three", "body": "Trusted by 10,000 teams.", "visual": "line", "alert": "Up"}
+  ],
+  "ctas": [{"id": "A", "label": "Start your free 30-day trial today", "sub": "nova.example"}],
+  "approvedClaims": [],
+  "scenes": [
+    {"id": "hook", "start": 0, "end": 3, "type": "kinetic-title"},
+    {"id": "product", "start": 3, "end": 9, "type": "interface-reveal"},
+    {"id": "features", "start": 10, "end": 18, "type": "feature-sequence"},
+    {"id": "cta", "start": 18, "end": 25, "type": "cta"}
+  ],
+  "variants": {"hooks": 3, "formats": ["9:16"], "ctas": 1}
+}
