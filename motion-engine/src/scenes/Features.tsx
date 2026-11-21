@@ -34,7 +34,7 @@ export const Features: React.FC<{c: Campaign; ev: Events['ev']['features']; per:
     <div style={{position: 'absolute', inset: 0}}>
       {c.features.map((f, i) => {
         const e = ev[i];
-        const inP = springStep(t - e.in, SPRINGS.smooth);
+        const inP = springStep(t - e.textIn, SPRINGS.smooth);
         const outP = window01(t, e.out, e.out + 0.3);
         if (t < e.in - 0.05 || t > e.out + 0.35) return null;
         const dx = ((1 - inP) * 90 - outP * 90) * l.u;

@@ -42,9 +42,25 @@ Filter a render: `--formats 9:16 --hooks A,B --ctas A`. The validator rejection 
 4. Validate → preview → **get approval** → render → QC → deliver `exports/`, `manifest.json` and `review-report.md`.
 
 ## Results in this build (Nova demo, fictional product)
-18 MP4 exports plus 6 posters. QC passes on all: exact 25.0 s, 30 fps, yuv420p bt709, audio present at −16 to −15 LUFS,
-no black or frozen frames, no layout warnings. The first QC run caught three real defects, all fixed before the final
-render: blank frames between scenes, 1.5 s static holds, and full-range colour.
+Measured on the final render (4 vCPU, no GPU, 897 s for all 18):
+- **18 MP4 exports + 6 posters** (86.7 MB). All 18 pass `qc.mjs`: video and audio both 25.000 s, 30 fps,
+  1080×1920 / 1080×1080 / 1920×1080, yuv420p, bt709 TV range, −14.1 LUFS, −1.4 dBTP true peak, no black or frozen
+  frames, zero overflow or safe-zone warnings across every rendered frame.
+- Transition sheets were also inspected by eye (the article's rule): no text overlaps text at any scene change, and no
+  frame is empty.
+
+The QC loop earned its place. Each of these was found in rendered output and fixed before the final render:
+| Found by | Defect | Fix |
+|---|---|---|
+| storyboard review | Blank frames at every scene change | Scenes overlap by 0.25 s |
+| storyboard review | Top-heavy 9:16 layout; accent phrase split across lines | Stack centred in the safe area; accent run kept on one line |
+| `freezedetect` | 1.5 s static holds | Scene push-in, toggle and "Scheduled ✓" confirmation, live-bar update |
+| `ffprobe` | Full-range `yuvj420p` / bt470bg colour | `colorSpace: 'bt709'` |
+| `ebur128` | Master at −23 LUFS (weak in the feed) | Two-pass loudnorm to −14 LUFS |
+| `ffprobe` | Audio 0.1 s longer than video after loudnorm | Trim to the exact video length |
+| in-render safe-zone check | Text sliding past the safe edge | Narrower text box, shorter slide, ~10 px push-in budget |
+| visual inspection | Outgoing and incoming headlines overlapping mid-crossfade | Text never crossfades with text; cards carry the cut |
+| visual inspection | Hook B repeated the tagline word for word | New result-angle hook: "Stop guessing. Start knowing." |
 
 Licensing: Remotion is free for individuals and companies with ≤3 employees; above that you need a Company License.
 Check your rights to client logos, fonts and music.

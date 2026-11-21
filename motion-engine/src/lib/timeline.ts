@@ -34,11 +34,12 @@ export function computeEvents(c: Campaign, beats?: number[]) {
   const per = featLen / c.features.length;
 
   const ev = {
-    hook: {wordsIn: 0.1, stagger: 0.085, out: hookLen - 0.3},
+    hook: {wordsIn: 0.1, stagger: 0.085, out: hookLen - 0.42}, // words gone (~2.9 s) before the next scene is visible
     product: {
       // Negative = starts during the previous scene's exit (scenes overlap by LEAD).
       windowIn: -0.2,
-      taglineIn: -0.1,
+      // Text never crossfades with text: the tagline waits until the hook's words have left (~3.03 s).
+      taglineIn: 0.08,
       kpisIn: 0.55,
       cursorIn: 1.1,
       click1: S('product', 2.0),
@@ -46,7 +47,8 @@ export function computeEvents(c: Campaign, beats?: number[]) {
       out: productLen - 0.32,
     },
     features: c.features.map((_, i) => ({
-      in: i === 0 ? -0.16 : i * per - 0.14,
+      in: i === 0 ? -0.16 : i * per - 0.14, // visual card (crossfades, so no empty frame)
+      textIn: i === 0 ? 0.04 : i * per + 0.02, // headline enters only after the previous text is gone
       visual: i * per + 0.35,
       hit: S('features', i * per + 1.8),
       out: (i + 1) * per - 0.3,

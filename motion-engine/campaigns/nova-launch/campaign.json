@@ -54,7 +54,7 @@
   },
   "hooks": [
     { "id": "A", "angle": "problem", "text": "Still building reports *by hand?*" },
-    { "id": "B", "angle": "result", "text": "Every metric. *One live view.*" },
+    { "id": "B", "angle": "result", "text": "Stop guessing. *Start knowing.*" },
     { "id": "C", "angle": "surprising-feature", "text": "Ask your data. *Get a chart.*" }
   ],
   "features": [
