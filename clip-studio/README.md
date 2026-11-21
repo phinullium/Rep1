@@ -51,8 +51,9 @@ Serve it with `npx serve web` or `python3 -m http.server -d web`.
 Tested in this build environment (Linux, 4 vCPU, no GPU) on the synthetic VOD from `tests/make_test_vod.py`:
 - `analyze` ranked the planted reaction (52–56 s) first. Its signals were loudness, motion, reaction words and pace.
   The cut starts on the setup sentence and ends right after the payoff.
-- `render` for TikTok, Reels, Shorts, X and YouTube: exact durations; 1080×1920 (or 1920×1080) at 30 fps;
-  captions burned with Inter Black; about −13.3 LUFS; cold open with a flash cut. TikTok was extended to 71 s.
+- `render` for TikTok, Reels, Shorts, X and YouTube, run from a **fresh `./install.sh core`**: exact durations;
+  1080×1920 (YouTube 1920×1080) yuv420p at 30 fps; captions burned with Inter Black; loudness −14.2 to −14.6 LUFS
+  (target −14); a 3 s cold open with a flash cut. TikTok was extended to 71.1 s, the others are 22.1 s.
 - `face` (Norfair) and `split` modes run and fall back correctly when no face is present. `motion` and `blur` modes were checked visually.
 - `web/index.html` exported an H.264 1080×1920 MP4 in headless Chromium.
 
